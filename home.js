@@ -52,10 +52,10 @@ featureHeaders.forEach(header => {
     header.addEventListener("click", () => {
         const item = header.parentElement;
         const content = item.querySelector(".feature-content");
-        
+
         // Toggle current
         item.classList.toggle("active");
-        
+
         if (item.classList.contains("active")) {
             content.style.height = content.scrollHeight + "px";
         } else {
@@ -67,9 +67,36 @@ featureHeaders.forEach(header => {
             if (otherHeader !== header) {
                 const otherItem = otherHeader.parentElement;
                 const otherContent = otherItem.querySelector(".feature-content");
-                otherItem.classList.remove("active");
-                otherContent.style.height = "0px";
+                if (otherItem.classList.contains("active")) {
+                    otherItem.classList.remove("active");
+                    otherContent.style.height = "0px";
+                }
             }
         });
     });
 });
+
+/* Stats Counter Animation */
+const stats = document.querySelectorAll('.stat-item h3');
+let started = false; // Function started ? No
+
+function startCount(el) {
+    let goal = el.dataset.target;
+    let count = setInterval(() => {
+        el.textContent++;
+        if (el.textContent == goal) {
+            clearInterval(count);
+        }
+    }, 2000 / goal);
+}
+
+const statsSection = document.querySelector('.stats-section');
+if (statsSection) {
+    const statsObserver = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && !started) {
+            stats.forEach(stat => startCount(stat));
+            started = true;
+        }
+    });
+    statsObserver.observe(statsSection);
+}
